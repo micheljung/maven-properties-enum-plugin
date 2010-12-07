@@ -4,10 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.maven.plugins</groupId>
 	<artifactId>maven-properties-enum-plugin</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven Property-Enum-Plugin</name>
-	<description>Creates enums for properties files.</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -48,6 +47,20 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+	<description>Never liked hard-coding your property keys? The maven-properties-enum-plugin allows you to generate enum types, holding all valid keys including javadoc.
+
+Your advantages:
+
+You can't access on non-existing keys as it would cause compile errors
+As it's an enum, you can use your IDE's auto-completion
+You'll never have to check your properties keys again
+You can see the property's value in the enum field's javadoc</description>
+	<url>http://code.google.com/p/maven-properties-enum-plugin/</url>
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/maven-properties-enum-plugin/issues</url>
+	</issueManagement>
+	<inceptionYear>2010</inceptionYear>
 	<developers>
 		<developer>
 			<id>micheljung</id>
@@ -58,7 +71,10 @@
 		</developer>
 	</developers>
 	<scm>
-		<url>svn://svn.code.sf.net/p/mvn-p-e-plugin/svn</url>
+		<connection>scm:svn:http://maven-properties-enum-plugin.googlecode.com/svn</connection>
+		<developerConnection>scm:svn:https://maven-properties-enum-plugin.googlecode.com/svn</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://code.google.com/p/maven-properties-enum-plugin/source/browse/</url>
 	</scm>
 	<build>
 		<plugins>
@@ -75,17 +91,7 @@
 		</plugins>
 	</build>
   <reporting>
-    <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.6</version>
-        <configuration>
-          <includes>**/*.java, **/*.properties</includes>
-          <configLocation>${basedir}/checkstyle.xml</configLocation>
-        </configuration>
-      </plugin>
+  	<plugins>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
