@@ -41,6 +41,9 @@ import org.apache.maven.project.MavenProject;
  */
 public class EnumGeneratorMojo extends AbstractMojo {
 
+  /**
+   * Code for the toString() method
+   */
   private static final CharSequence TO_STRING_METHOD = "  @Override\n  public String toString() {\n"
           + "    return originalKey;\n  }\n";
 
@@ -52,7 +55,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the property's key
    * @return the enum field name
    */
-  static String buildEnumFieldName(String propertyKey) {
+  static String buildEnumFieldName(final String propertyKey) {
     String fieldName = propertyKey.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
     fieldName = fieldName.replaceAll("([A-Z])\\.([A-Z])", "$1_$2");
     return fieldName;
@@ -65,7 +68,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the enum target file
    * @return the enum type name
    */
-  static String buildEnumTypeName(File targetFile) {
+  static String buildEnumTypeName(final File targetFile) {
     String fileName = targetFile.getName();
     return fileName.substring(0, fileName.lastIndexOf('.'));
   }
@@ -81,7 +84,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the maximum line length
    * @return the builded javadoc string
    */
-  static String buildJavadoc(String description, String indent, int lineLength) {
+  static String buildJavadoc(final String description, final String indent, final int lineLength) {
     String javaDocPrefix = String.format("%s * ", indent);
 
     StringBuilder builder = new StringBuilder();
@@ -109,7 +112,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @return e.g. &quot;com.example&quot; if baseDir is &quot;src/main/resources&quot; and propertiesFile
    *         &quot;src/main/resources/com/example/File.properties&quot;
    */
-  static String buildPackageName(File propertiesFile, String baseDir) {
+  static String buildPackageName(final File propertiesFile, final String baseDir) {
     // substring(1) because there would be a leading dot
     return propertiesFile.getAbsoluteFile().getParent().replace(baseDir, "").replace(File.separatorChar, '.')
             .substring(1);
@@ -126,7 +129,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the directory where the files will be generated in
    * @return e.g. &quot;target/generated-source/enum/com/example/Enum.java&quot;
    */
-  static File buildTargetFile(File propertiesFile, String packageName, String targetDirectory) {
+  static File buildTargetFile(final File propertiesFile, final String packageName, final String targetDirectory) {
     String propertyFileName = propertiesFile.getName();
     char[] charArray = propertyFileName.substring(0, propertyFileName.lastIndexOf('.')).toCharArray();
     charArray[0] = Character.toUpperCase(charArray[0]);
@@ -143,7 +146,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if a directory could not be created
    */
-  static void createDirectories(File directory) throws IOException {
+  static void createDirectories(final File directory) throws IOException {
     if (!directory.exists() && !directory.mkdirs()) {
       throw new IOException("Could not create directory: " + directory.getAbsolutePath());
     }
@@ -159,7 +162,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the maximum line length
    * @return wrapped lines
    */
-  static List<String> wordWrap(String string, int length) {
+  static List<String> wordWrap(final String string, final int length) {
     Pattern pattern = Pattern.compile("(.{1," + length + "})(?:[\\s]|$)|([\\S]{" + length + ",})");
     Matcher m = pattern.matcher(string);
 
@@ -265,7 +268,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void generateEnumFile(File propertiesFile) throws IOException {
+  void generateEnumFile(final File propertiesFile) throws IOException {
     if (packageName == null) {
       packageName = buildPackageName(propertiesFile, baseDir);
     }
@@ -318,7 +321,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writeConstructor(Writer writer, String enumTypeName) throws IOException {
+  void writeConstructor(final Writer writer, final String enumTypeName) throws IOException {
     StringBuilder builder = new StringBuilder();
     builder.append("Constructs a new {@link ");
     builder.append(enumTypeName);
@@ -346,7 +349,8 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writeEnumField(String key, String value, Writer writer, boolean isLast) throws IOException {
+  void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast)
+          throws IOException {
     String enumName = buildEnumFieldName(key);
 
     String description = String.format(enumJavadoc, key, value);
@@ -374,7 +378,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writeEnumTypeJavadoc(Writer writer, String propertyFileName) throws IOException {
+  void writeEnumTypeJavadoc(final Writer writer, final String propertyFileName) throws IOException {
     StringBuilder builder = new StringBuilder("Auto generated enum type for property file ");
     builder.append("&quot;");
     builder.append(baseDir);
@@ -395,7 +399,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writeEnumTypeSignature(Writer writer, String name) throws IOException {
+  void writeEnumTypeSignature(final Writer writer, final String name) throws IOException {
     writer.append("public enum ");
     writer.append(name);
     writer.append(" {\n\n");
@@ -408,7 +412,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writeOriginalKeyField(Writer writer) throws IOException {
+  void writeOriginalKeyField(final Writer writer) throws IOException {
     String javadoc = buildJavadoc("The original key in the property file.", "  ", lineLength);
     writer.append(javadoc);
     writer.append("  private final String originalKey;\n\n");
@@ -422,7 +426,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writePackageDeclaration(Writer writer, String packageName) throws IOException {
+  void writePackageDeclaration(final Writer writer, final String packageName) throws IOException {
     writer.append("package ");
     writer.append(packageName);
     writer.append(";\n\n");
@@ -434,8 +438,9 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writeToStringMethod(Writer writer) throws IOException {
+  void writeToStringMethod(final Writer writer) throws IOException {
+    String javadoc = buildJavadoc("@return the original property key", "  ", lineLength);
+    writer.append(javadoc);
     writer.append(TO_STRING_METHOD);
   }
-
 }
