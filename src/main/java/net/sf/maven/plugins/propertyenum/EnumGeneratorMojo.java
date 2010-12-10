@@ -48,16 +48,27 @@ public class EnumGeneratorMojo extends AbstractMojo {
           + "    return originalKey;\n  }\n";
 
   /**
+   * The pattern a generated enum field name must match to be valid.
+   */
+  private static final String ENUM_FIELD_PATTERN = "\\D[A-Z0-9_]*";
+
+  /**
    * Builds an enumeration field's name, based on the property key. Converts camelCase to CAMEL_CASE and package.names
    * to PACKAGE_NAMES
    * 
    * @param propertyKey
    *          the property's key
    * @return the enum field name
+   * @throws InvalidPropertyKeyException
+   *           if the property key is invalid, so that the generated enum field name does not match the pattern
+   *           {@value #ENUM_FIELD_PATTERN}
    */
-  static String buildEnumFieldName(final String propertyKey) {
+  static String buildEnumFieldName(final String propertyKey) throws InvalidPropertyKeyException {
     String fieldName = propertyKey.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
-    fieldName = fieldName.replaceAll("([A-Z])\\.([A-Z])", "$1_$2");
+    fieldName = fieldName.replaceAll("([A-Z])[\\.\\s-]([A-Z])", "$1_$2");
+    if (!fieldName.matches(ENUM_FIELD_PATTERN)) {
+      throw new InvalidPropertyKeyException("The key \"" + propertyKey + "\" is invalid");
+    }
     return fieldName;
   }
 
@@ -254,7 +265,11 @@ public class EnumGeneratorMojo extends AbstractMojo {
         generateEnumFile(sourceFile);
       }
     } catch (IOException e) {
+      getLog().error(e);
       throw new MojoExecutionException("An IO Exception occurred", e);
+    } catch (InvalidPropertyKeyException e) {
+      getLog().error(e);
+      throw new MojoFailureException("An invalid property key was detected", e);
     }
 
     project.addCompileSourceRoot(generateDirectory);
@@ -267,8 +282,11 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the properties file read
    * @throws IOException
    *           if an I/O error occurred
+   * @throws InvalidPropertyKeyException
+   *           if a property key is invalid, so that the generated enum field name does not match the pattern
+   *           {@value #ENUM_FIELD_PATTERN}
    */
-  void generateEnumFile(final File propertiesFile) throws IOException {
+  void generateEnumFile(final File propertiesFile) throws IOException, InvalidPropertyKeyException {
     if (packageName == null) {
       packageName = buildPackageName(propertiesFile, baseDir);
     }
@@ -348,9 +366,12 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          <code>true</code> if this is the last enum field, <code>false</code> otherwise
    * @throws IOException
    *           if an I/O error occurred
+   * @throws InvalidPropertyKeyException
+   *           if the property key is invalid, so that the generated enum field name does not match the pattern
+   *           {@value #ENUM_FIELD_PATTERN}
    */
   void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast)
-          throws IOException {
+          throws IOException, InvalidPropertyKeyException {
     String enumName = buildEnumFieldName(key);
 
     String description = String.format(enumJavadoc, key, value);

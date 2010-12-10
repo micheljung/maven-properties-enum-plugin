@@ -109,14 +109,37 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
 
   /**
    * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#buildEnumFieldName(java.lang.String)}.
+   * 
+   * @throws InvalidPropertyKeyException
+   *           if a property key was invalid
    */
-
-  public void testBuildEnumFieldName() {
+  public void testBuildEnumFieldName() throws InvalidPropertyKeyException {
     assertEquals("KEY", EnumGeneratorMojo.buildEnumFieldName("key"));
     assertEquals("MY_KEY", EnumGeneratorMojo.buildEnumFieldName("myKey"));
     assertEquals("MY_LONG_KEY", EnumGeneratorMojo.buildEnumFieldName("myLongKey"));
     assertEquals("COM_EXAMPLE_KEY", EnumGeneratorMojo.buildEnumFieldName("com.example.key"));
     assertEquals("COM_EXAMPLE_MY_LONG_KEY", EnumGeneratorMojo.buildEnumFieldName("com.example.myLongKey"));
+    assertEquals("KEY_WITH_SPACES", EnumGeneratorMojo.buildEnumFieldName("key with spaces"));
+    assertEquals("KEY_WITH_UNDERSCORES", EnumGeneratorMojo.buildEnumFieldName("key_with_underscores"));
+    assertEquals("KEY_WITH_DASHES", EnumGeneratorMojo.buildEnumFieldName("key-with-dashes"));
+    try {
+      EnumGeneratorMojo.buildEnumFieldName("dollar$key");
+      fail("invalid key was valid");
+    } catch (InvalidPropertyKeyException e) {
+      // good
+    }
+    try {
+      EnumGeneratorMojo.buildEnumFieldName("dollar$key");
+      fail("invalid key was valid");
+    } catch (InvalidPropertyKeyException e) {
+      // good
+    }
+    try {
+      EnumGeneratorMojo.buildEnumFieldName("plus+key");
+      fail("invalid key was valid");
+    } catch (InvalidPropertyKeyException e) {
+      // good
+    }
   }
 
   /**
@@ -173,27 +196,12 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    *           if an exception occurred
    */
   public void testExecute() throws Exception {
-    File pluginXml = new File(getBasedir(), "src/test/resources/unit/plugin-config.xml");
+    File pluginXml = new File(getBasedir(), "src/test/resources/plugin-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
     assertNotNull(mojo);
 
-    // why isn't this set up by the harness based on the default-value? TODO get to bottom of this!
-    // setVariableValueToObject( mojo, "includeProjectDependencies", Boolean.TRUE );
-    // setVariableValueToObject( mojo, "killAfter", new Long( -1 ) );
-
     mojo.execute();
 
-    // Map<String, Object> context = new HashMap<String, Object>();
-    // context.put("files", Arrays.asList(propertiesFile));
-    // enumGeneratorMojo.execute();
-  }
-
-  /**
-   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#generateEnumFile(java.io.File)}.
-   * 
-   * @throws IOException
-   */
-  public void testGenerateEnumFile() throws IOException {
     File expectedFile = new File("src/test/resources/net/sf/maven/plugins/ExpectedResult.java");
     File actualFile = new File("target/generated-classes/net/sf/maven/plugins/MyProperties.java");
     assertTrue(actualFile.exists());
