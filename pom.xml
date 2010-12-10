@@ -6,7 +6,7 @@
 	<artifactId>maven-properties-enum-plugin</artifactId>
 	<version>1.0.1</version>
 	<packaging>maven-plugin</packaging>
-	<name>Maven Property-Enum-Plugin</name>
+	<name>Maven Properties-Enum-Plugin</name>
 	<licenses>
 		<license>
 			<name>Apache 2</name>
