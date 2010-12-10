@@ -1,0 +1,21 @@
+<project>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.sf.maven.plugins</groupId>
+				<artifactId>maven-properties-enum-plugin</artifactId>
+				<configuration>
+					<baseDir>src/test/resources</baseDir>
+					<generateDirectory>target/generated-classes</generateDirectory>
+					<lineLength>80</lineLength>
+					<files>
+						<file>net/sf/maven/plugins/myProperties.properties</file>
+					</files>
+					<enumJavadoc>Key &quot;%1$s&quot; for property with value &quot;%2$s&quot;</enumJavadoc>
+					
+          <project implementation="net.sf.maven.plugins.propertyenum.stub.EnumGeneratorProjectStub"/>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
