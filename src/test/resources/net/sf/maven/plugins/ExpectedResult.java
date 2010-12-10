@@ -2,7 +2,7 @@ package net.sf.maven.plugins;
 
 /**
  * Auto generated enum type for property file
- * &quot;C:\Users\Downlord\workspace\maven-properties-enum-plugin\src\test\resources\myProperties.properties&quot;
+ * &quot;/net/sf/maven/plugins/myProperties.properties&quot;
  */
 public enum MyProperties {
 

@@ -285,7 +285,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
       properties.load(reader);
 
       writePackageDeclaration(writer, packageName);
-      writeEnumTypeJavadoc(writer, propertiesFile.getName());
+      writeEnumTypeJavadoc(writer, propertiesFile);
       writeEnumTypeSignature(writer, buildEnumTypeName(targetFile));
 
       Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator();
@@ -373,17 +373,16 @@ public class EnumGeneratorMojo extends AbstractMojo {
   /**
    * @param writer
    *          the Writer to use
-   * @param propertyFileName
-   *          the path to the source property file, relative to baseDir.
+   * @param propertiesFile
+   *          the source property file
    * @throws IOException
    *           if an I/O error occurred
    */
-  void writeEnumTypeJavadoc(final Writer writer, final String propertyFileName) throws IOException {
+  void writeEnumTypeJavadoc(final Writer writer, final File propertiesFile) throws IOException {
     StringBuilder builder = new StringBuilder("Auto generated enum type for property file ");
     builder.append("&quot;");
-    builder.append(baseDir);
-    builder.append(File.separatorChar);
-    builder.append(propertyFileName);
+    // As it's javadoc, we want to have / in the path
+    builder.append(propertiesFile.getAbsolutePath().replace(baseDir, "").replace(File.separatorChar, '/'));
     builder.append("&quot;");
     String description = builder.toString();
 
