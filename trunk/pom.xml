@@ -107,6 +107,11 @@ Your advantages:
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>2.1.1</version>
+      </plugin>
 		</plugins>
 	</build>
 	<reporting>
@@ -228,5 +233,8 @@ Your advantages:
         </plugins>
       </build>
     </profile>
-  </profiles>
+    <profile>
+    	<id>generate-maven-site</id>
+    </profile>
+	</profiles>
 </project>
