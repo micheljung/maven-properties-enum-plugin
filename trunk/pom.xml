@@ -2,11 +2,23 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.sf.maven.plugins</groupId>
+	<groupId>net.sf.maven-properties-enum-plugin</groupId>
 	<artifactId>maven-properties-enum-plugin</artifactId>
 	<version>1.0</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven Property-Enum-Plugin</name>
+	<distributionManagement>
+		<repository>
+			<id>sonatype-release</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url> 
+			<uniqueVersion>true</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>       
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -51,10 +63,10 @@
 
 Your advantages:
 
-You can't access on non-existing keys as it would cause compile errors
-As it's an enum, you can use your IDE's auto-completion
-You'll never have to check your properties keys again
-You can see the property's value in the enum field's javadoc</description>
+ * You can't access on non-existing keys as it would cause compile errors
+ * As it's an enum, you can use your IDE's auto-completion
+ * You'll never have to check your properties keys again
+ * You can see the property's value in the enum field's javadoc</description>
 	<url>http://code.google.com/p/maven-properties-enum-plugin/</url>
 	<issueManagement>
 		<system>Google Code</system>

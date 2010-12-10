@@ -17,6 +17,11 @@ public enum MyProperties {
   VALUE1("value1"),
 
   /**
+   * Key "com.example.myDottedKey" for property with value "My dotted Key"
+   */
+  COM_EXAMPLE_MY_DOTTED_KEY("com.example.myDottedKey"),
+
+  /**
    * Key "myKey" for property with value "My Key"
    */
   MY_KEY("myKey");
@@ -35,6 +40,9 @@ public enum MyProperties {
     this.originalKey = originalKey;
   }
 
+  /**
+   * @return the original property key
+   */
   @Override
   public String toString() {
     return originalKey;
