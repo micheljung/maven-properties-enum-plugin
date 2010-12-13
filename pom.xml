@@ -116,9 +116,14 @@ Your advantages:
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>2.6</version>
-				<configuration>
-					<goal>report</goal>
-				</configuration>
+				<executions>
+					<execution>
+						<id>plugin-report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
