@@ -50,7 +50,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
   /**
    * The pattern a generated enum field name must match to be valid.
    */
-  private static final String ENUM_FIELD_PATTERN = "\\D[A-Z0-9_]*";
+  private static final String ENUM_FIELD_PATTERN = "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$";
 
   /**
    * Builds an enumeration field's name, based on the property key. Converts camelCase to CAMEL_CASE and package.names
