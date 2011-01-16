@@ -19,11 +19,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +37,7 @@ import org.apache.maven.project.MavenProject;
 /**
  * This Mojo generates a Java enum based on the keys of a properties file.
  * 
- * @author Michel Jung &lt;michel_jung@hotmail.com&gt;
+ * @author <a href="mailto:michel.jung@hotmail.com">Michel Jung</a>
  * @goal generate
  * @phase generate-sources
  */
@@ -73,7 +75,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
   }
 
   /**
-   * Builds the enum type name depending on the target file (e.g. &quot;Enum.java&quot; becomes &quot;Enum&quot;)
+   * Builds the enum type name depending on the target file (e.g. "Enum.java" becomes "Enum")
    * 
    * @param targetFile
    *          the enum target file
@@ -90,7 +92,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @param description
    *          the javadoc description
    * @param indent
-   *          a bunch of spaces, used to indent (e.g. two spaces &quot;&nbsp;&nbsp;&quot);
+   *          a bunch of spaces, used to indent (e.g. two spaces "&nbsp;&nbsp;");
    * @param lineLength
    *          the maximum line length
    * @return the builded javadoc string
@@ -120,8 +122,8 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the properties file
    * @param baseDir
    *          the base directory path to cut off
-   * @return e.g. &quot;com.example&quot; if baseDir is &quot;src/main/resources&quot; and propertiesFile
-   *         &quot;src/main/resources/com/example/File.properties&quot;
+   * @return e.g. "com.example" if baseDir is "src/main/resources" and propertiesFile
+   *         "src/main/resources/com/example/File.properties"
    */
   static String buildPackageName(final File propertiesFile, final String baseDir) {
     // substring(1) because there would be a leading dot
@@ -138,7 +140,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *          the target file's package name
    * @param targetDirectory
    *          the directory where the files will be generated in
-   * @return e.g. &quot;target/generated-source/enum/com/example/Enum.java&quot;
+   * @return e.g. "target/generated-source/enum/com/example/Enum.java"
    */
   static File buildTargetFile(final File propertiesFile, final String packageName, final String targetDirectory) {
     String propertyFileName = propertiesFile.getName();
@@ -192,6 +194,14 @@ public class EnumGeneratorMojo extends AbstractMojo {
   }
 
   /**
+   * Fully qualified name of an interface to implement. This allows to make multiple generated enum types an
+   * implementation of the same interface.
+   * 
+   * @parameter
+   */
+  private String implement;
+
+  /**
    * List of files to process. Relative to <code>baseDir</code>.
    * 
    * @parameter
@@ -231,7 +241,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * String format for enum javadoc. Two strings are given: the first one is the property key, the second one the
    * property value.
    * 
-   * @parameter default-value="Key &quot;%1$s&quot; for property with value &quot;%2$s&quot;."
+   * @parameter default-value="Key "%1$s" for property with value "%2$s"."
    */
   private String enumJavadoc;
 
@@ -243,6 +253,18 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @readonly
    */
   private MavenProject project;
+
+  /**
+   * A set of enum field names that have already been declared.
+   */
+  private final Set<String> alreadyDeclaredEnumNames;
+
+  /**
+   * Constructs a new {@link EnumGeneratorMojo}.
+   */
+  public EnumGeneratorMojo() {
+    alreadyDeclaredEnumNames = new HashSet<String>();
+  }
 
   /**
    * Generates an enum based on properties file.
@@ -374,6 +396,11 @@ public class EnumGeneratorMojo extends AbstractMojo {
           throws IOException, InvalidPropertyKeyException {
     String enumName = buildEnumFieldName(key);
 
+    if (alreadyDeclaredEnumNames.contains(enumName)) {
+      throw new DuplicateEnumFieldException("The enum field " + enumName + " occurs a second time");
+    }
+    alreadyDeclaredEnumNames.add(enumName);
+
     String description = String.format(enumJavadoc, key, value);
     String javadoc = buildJavadoc(description, "  ", lineLength);
 
@@ -401,10 +428,10 @@ public class EnumGeneratorMojo extends AbstractMojo {
    */
   void writeEnumTypeJavadoc(final Writer writer, final File propertiesFile) throws IOException {
     StringBuilder builder = new StringBuilder("Auto generated enum type for property file ");
-    builder.append("&quot;");
+    builder.append("\"");
     // As it's javadoc, we want to have / in the path
     builder.append(propertiesFile.getAbsolutePath().replace(baseDir, "").replace(File.separatorChar, '/'));
-    builder.append("&quot;");
+    builder.append("\".");
     String description = builder.toString();
 
     String javadoc = buildJavadoc(description, "", lineLength);
@@ -422,11 +449,14 @@ public class EnumGeneratorMojo extends AbstractMojo {
   void writeEnumTypeSignature(final Writer writer, final String name) throws IOException {
     writer.append("public enum ");
     writer.append(name);
+    if (implement != null) {
+      writer.append(" implements ");
+      writer.append(implement);
+    }
     writer.append(" {\n\n");
   }
 
   /**
-   * 
    * @param writer
    *          the Writer to use
    * @throws IOException
@@ -459,7 +489,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *           if an I/O error occurred
    */
   void writeToStringMethod(final Writer writer) throws IOException {
-    String javadoc = buildJavadoc("@return the original property key", "  ", lineLength);
+    String javadoc = buildJavadoc("@return the original property key.", "  ", lineLength);
     writer.append(javadoc);
     writer.append(TO_STRING_METHOD);
   }
