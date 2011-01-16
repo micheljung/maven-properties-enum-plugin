@@ -189,6 +189,19 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
     assertTrue(dir.exists());
   }
 
+  public void testDuplicateFieldDetection() throws Exception {
+    File pluginXml = new File(getBasedir(), "src/test/resources/duplicate-enum-plugin-config.xml");
+    EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
+    assertNotNull(mojo);
+
+    try {
+      mojo.execute();
+      fail("Duplicated enum field was not detected");
+    } catch (DuplicateEnumFieldException e) {
+      // good!
+    }
+  }
+
   /**
    * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#execute()}.
    * 

@@ -2,27 +2,27 @@ package net.sf.maven.plugins;
 
 /**
  * Auto generated enum type for property file
- * &quot;/net/sf/maven/plugins/myProperties.properties&quot;
+ * "/net/sf/maven/plugins/myProperties.properties".
  */
-public enum MyProperties {
+public enum MyProperties implements com.example.MyInterface {
 
   /**
-   * Key "aQuietLongKey" for property with value "This is a quiet long key"
+   * Key "aQuietLongKey" for property with value "This is a quiet long key".
    */
   A_QUIET_LONG_KEY("aQuietLongKey"),
 
   /**
-   * Key "value1" for property with value "Value 1"
+   * Key "value1" for property with value "Value 1".
    */
   VALUE1("value1"),
 
   /**
-   * Key "com.example.myDottedKey" for property with value "My dotted Key"
+   * Key "com.example.myDottedKey" for property with value "My dotted Key".
    */
   COM_EXAMPLE_MY_DOTTED_KEY("com.example.myDottedKey"),
 
   /**
-   * Key "myKey" for property with value "My Key"
+   * Key "myKey" for property with value "My Key".
    */
   MY_KEY("myKey");
 
@@ -41,7 +41,7 @@ public enum MyProperties {
   }
 
   /**
-   * @return the original property key
+   * @return the original property key.
    */
   @Override
   public String toString() {

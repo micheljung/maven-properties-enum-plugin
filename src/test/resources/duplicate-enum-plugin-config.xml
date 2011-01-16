@@ -10,7 +10,7 @@
 					<lineLength>80</lineLength>
 					<implement>com.example.MyInterface</implement>
 					<files>
-						<file>net/sf/maven/plugins/myProperties.properties</file>
+						<file>net/sf/maven/plugins/duplicateProperties.properties</file>
 					</files>
 					<enumJavadoc>Key "%1$s" for property with value "%2$s".</enumJavadoc>
 					
