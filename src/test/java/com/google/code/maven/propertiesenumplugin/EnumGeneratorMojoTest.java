@@ -20,16 +20,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Michel Jung &lt;michel_jung@hotmail.com&gt;
  */
 public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
 
-  private static final Logger logger = Logger.getLogger(EnumGeneratorMojo.class);
+  /**
+   * Logger.
+   */
+  private static final Logger logger = LoggerFactory.getLogger(EnumGeneratorMojoTest.class);
 
   private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
