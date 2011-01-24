@@ -37,7 +37,7 @@ import org.apache.maven.project.MavenProject;
 /**
  * This Mojo generates a Java enum based on the keys of a properties file.
  * 
- * @author <a href="mailto:michel.jung@hotmail.com">Michel Jung</a>
+ * @author <a href="mailto:michel_jung@hotmail.com">Michel Jung</a>
  * @goal generate
  * @phase generate-sources
  */

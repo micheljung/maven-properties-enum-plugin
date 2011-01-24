@@ -15,7 +15,7 @@ package com.google.code.maven.propertiesenumplugin;
 /**
  * This exception is thrown if a duplicate enum field name was detected.
  * 
- * @author <a href="mailto:michel.jung@hotmail.com">Michel Jung</a>
+ * @author <a href="mailto:michel_jung@hotmail.com">Michel Jung</a>
  */
 public class DuplicateEnumFieldException extends RuntimeException {
 
