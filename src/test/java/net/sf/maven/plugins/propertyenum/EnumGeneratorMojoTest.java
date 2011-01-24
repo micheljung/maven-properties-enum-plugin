@@ -10,7 +10,7 @@
  * "AS IS" BASIS,WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.See the License for the
  * specific language governing permissions andlimitations under the License.
  */
-package com.google.code.maven.propertiesenumplugin;
+package net.sf.maven.plugins.propertyenum;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,20 +20,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Michel Jung &lt;michel_jung@hotmail.com&gt;
  */
 public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
 
-  /**
-   * Logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(EnumGeneratorMojoTest.class);
+  private static final Logger logger = Logger.getLogger(EnumGeneratorMojo.class);
 
   private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
@@ -92,6 +88,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
     targetFile.deleteOnExit();
 
     propertiesFile = new File(PROPERTIES_FILE_NAME);
+    propertiesFile.deleteOnExit();
 
     // required for mojo lookups to work
     super.setUp();
@@ -103,49 +100,27 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
   @Override
   public void tearDown() {
     if (!targetFile.delete()) {
-      logger.warn("Could not delete " + targetFile.getAbsolutePath());
+      logger.error("Could not delete " + targetFile.getAbsolutePath());
+    }
+    if (!propertiesFile.delete()) {
+      logger.error("Could not delete " + targetFile.getAbsolutePath());
     }
   }
 
   /**
-   * Test method for
-   * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildEnumFieldName(java.lang.String)}.
-   * 
-   * @throws InvalidPropertyKeyException
-   *           if a property key was invalid
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#buildEnumFieldName(java.lang.String)}.
    */
-  public void testBuildEnumFieldName() throws InvalidPropertyKeyException {
+
+  public void testBuildEnumFieldName() {
     assertEquals("KEY", EnumGeneratorMojo.buildEnumFieldName("key"));
     assertEquals("MY_KEY", EnumGeneratorMojo.buildEnumFieldName("myKey"));
     assertEquals("MY_LONG_KEY", EnumGeneratorMojo.buildEnumFieldName("myLongKey"));
     assertEquals("COM_EXAMPLE_KEY", EnumGeneratorMojo.buildEnumFieldName("com.example.key"));
     assertEquals("COM_EXAMPLE_MY_LONG_KEY", EnumGeneratorMojo.buildEnumFieldName("com.example.myLongKey"));
-    assertEquals("KEY_WITH_SPACES", EnumGeneratorMojo.buildEnumFieldName("key with spaces"));
-    assertEquals("KEY_WITH_UNDERSCORES", EnumGeneratorMojo.buildEnumFieldName("key_with_underscores"));
-    assertEquals("KEY_WITH_DASHES", EnumGeneratorMojo.buildEnumFieldName("key-with-dashes"));
-    try {
-      EnumGeneratorMojo.buildEnumFieldName("dollar$key");
-      fail("invalid key was valid");
-    } catch (InvalidPropertyKeyException e) {
-      // good
-    }
-    try {
-      EnumGeneratorMojo.buildEnumFieldName("dollar$key");
-      fail("invalid key was valid");
-    } catch (InvalidPropertyKeyException e) {
-      // good
-    }
-    try {
-      EnumGeneratorMojo.buildEnumFieldName("plus+key");
-      fail("invalid key was valid");
-    } catch (InvalidPropertyKeyException e) {
-      // good
-    }
   }
 
   /**
-   * Test method for
-   * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildEnumTypeName(java.io.File)}.
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#buildEnumTypeName(java.io.File)}.
    */
 
   public void testBuildEnumTypeName() {
@@ -153,8 +128,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
   }
 
   /**
-   * Test method for
-   * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildJavadoc(String, String, int)}.
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#buildJavadoc(String, String, int)}.
    */
   public void testBuildJavadoc() {
     String expected = "/**\n * This is a javadoc.\n */\n";
@@ -167,24 +141,21 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
   }
 
   /**
-   * Test method for {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildPackageName(File, String)}
-   * .
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#buildPackageName(File, String)}.
    */
   public void testBuildPackageName() {
     EnumGeneratorMojo.buildPackageName(propertiesFile, baseDir);
   }
 
   /**
-   * Test method for
-   * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildTargetFile(File, String, String)}.
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#buildTargetFile(File, String, String)}.
    */
   public void testBuildTargetFile() {
     EnumGeneratorMojo.buildTargetFile(propertiesFile, packageName, targetDirectoryPath);
   }
 
   /**
-   * Test method for
-   * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#createDirectories(java.io.File)}.
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#createDirectories(java.io.File)}.
    * 
    * @throws IOException
    *           if a directory could not be created
@@ -195,44 +166,43 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
     assertTrue(dir.exists());
   }
 
-  public void testDuplicateFieldDetection() throws Exception {
-    File pluginXml = new File(getBasedir(), "src/test/resources/duplicate-enum-plugin-config.xml");
-    EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
-    assertNotNull(mojo);
-
-    try {
-      mojo.execute();
-      fail("Duplicated enum field was not detected");
-    } catch (DuplicateEnumFieldException e) {
-      // good!
-    }
-  }
-
   /**
-   * Test method for {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#execute()}.
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#execute()}.
    * 
    * @throws Exception
    *           if an exception occurred
    */
   public void testExecute() throws Exception {
-    File pluginXml = new File(getBasedir(), "src/test/resources/plugin-config.xml");
+    File pluginXml = new File(getBasedir(), "src/test/resources/unit/plugin-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
     assertNotNull(mojo);
 
+    // why isn't this set up by the harness based on the default-value? TODO get to bottom of this!
+    // setVariableValueToObject( mojo, "includeProjectDependencies", Boolean.TRUE );
+    // setVariableValueToObject( mojo, "killAfter", new Long( -1 ) );
+
     mojo.execute();
 
-    File expectedFile = new File("src/test/resources/com/google/code/maven/propertiesenumplugin/ExpectedResult.java");
-    File actualFile = new File("target/generated-sources/com/google/code/maven/propertiesenumplugin/MyProperties.java");
-    assertTrue("File with expected result could not be found: " + expectedFile, expectedFile.exists());
-    assertTrue("Expected, generated file could not be found: " + actualFile, actualFile.exists());
-
-    assertTrue("Content of file " + actualFile + " does not match content of file " + expectedFile,
-            FileUtils.contentEquals(expectedFile, actualFile));
+    // Map<String, Object> context = new HashMap<String, Object>();
+    // context.put("files", Arrays.asList(propertiesFile));
+    // enumGeneratorMojo.execute();
   }
 
   /**
-   * Test method for
-   * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#wordWrap(java.lang.String, int)}.
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#generateEnumFile(java.io.File)}.
+   * 
+   * @throws IOException
+   */
+  public void testGenerateEnumFile() throws IOException {
+    File expectedFile = new File("src/test/resources/net/sf/maven/plugins/ExpectedResult.java");
+    File actualFile = new File("target/generated-classes/net/sf/maven/plugins/MyProperties.java");
+    assertTrue(actualFile.exists());
+
+    assertTrue(FileUtils.contentEquals(expectedFile, actualFile));
+  }
+
+  /**
+   * Test method for {@link net.sf.maven.plugins.propertyenum.EnumGeneratorMojo#wordWrap(java.lang.String, int)}.
    */
   public void testWordWrap() {
     Map<String, List<String>> strings = new HashMap<String, List<String>>();
