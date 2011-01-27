@@ -202,7 +202,8 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private String implement;
 
   /**
-   * List of files to process. Relative to <code>baseDir</code>.
+   * List of files to process. Relative to <code>baseDir</code>. The path will be used as package name, if
+   * <code>packageName</code> is not set.
    * 
    * @parameter
    */
@@ -216,14 +217,14 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private String baseDir;
 
   /**
-   * The directory to create the file in.
+   * The directory to create the files in.
    * 
    * @parameter default-value="${basedir}/target/generated-sources/enum"
    */
   private String generateDirectory;
 
   /**
-   * The maximum line length.
+   * The maximum line length to use when creating the source file.
    * 
    * @parameter default-value="80"
    */
@@ -238,8 +239,8 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private String packageName;
 
   /**
-   * String format for enum javadoc. Two strings are given: the first one is the property key, the second one the
-   * property value.
+   * String format for enum field's javadoc. Two strings are given: the first one is the property key, the second one
+   * the property value.
    * 
    * @parameter default-value="Key \"%1$s\" for property with value \"%2$s\"."
    */
