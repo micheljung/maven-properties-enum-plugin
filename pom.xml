@@ -122,20 +122,6 @@ Your advantages:
         <artifactId>maven-site-plugin</artifactId>
         <version>2.1.1</version>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <id>plugin-report</id>
-            <phase>site</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <reporting>
@@ -233,6 +219,11 @@ Your advantages:
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>2.6</version>
+      </plugin>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+      	<artifactId>maven-plugin-plugin</artifactId>
+      	<version>2.6</version>
       </plugin>
     </plugins>
   </reporting>
