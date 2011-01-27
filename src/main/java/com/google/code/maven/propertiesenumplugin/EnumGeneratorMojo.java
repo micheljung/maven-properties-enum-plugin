@@ -209,21 +209,21 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private List<String> files;
 
   /**
-   * Base directory for poperties files. Default is "${basedir}/src/main/resources".
+   * Base directory for poperties files.
    * 
    * @parameter default-value="${basedir}/src/main/resources"
    */
   private String baseDir;
 
   /**
-   * The directory to create the file in. Default is "${basedir}/target/generated-sources/enum".
+   * The directory to create the file in.
    * 
    * @parameter default-value="${basedir}/target/generated-sources/enum"
    */
   private String generateDirectory;
 
   /**
-   * The maximum line length. Default is 80.
+   * The maximum line length.
    * 
    * @parameter default-value="80"
    */
@@ -241,7 +241,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * String format for enum javadoc. Two strings are given: the first one is the property key, the second one the
    * property value.
    * 
-   * @parameter default-value="Key "%1$s" for property with value "%2$s"."
+   * @parameter default-value="Key \"%1$s\" for property with value \"%2$s\"."
    */
   private String enumJavadoc;
 
