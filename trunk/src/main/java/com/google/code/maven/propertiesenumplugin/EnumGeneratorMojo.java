@@ -289,10 +289,10 @@ public class EnumGeneratorMojo extends AbstractMojo {
       }
     } catch (IOException e) {
       getLog().error(e);
-      throw new MojoExecutionException("An IO Exception occurred", e);
+      throw new MojoExecutionException(e.getMessage(), e);
     } catch (InvalidPropertyKeyException e) {
       getLog().error(e);
-      throw new MojoFailureException("An invalid property key was detected", e);
+      throw new MojoFailureException(e.getMessage(), e);
     }
 
     project.addCompileSourceRoot(generateDirectory);
