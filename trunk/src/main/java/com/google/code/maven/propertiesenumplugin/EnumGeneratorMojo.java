@@ -242,7 +242,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * String format for enum field's javadoc. Two strings are given: the first one is the property key, the second one
    * the property value.
    * 
-   * @parameter default-value="Key \"%1$s\" for property with value \"%2$s\"."
+   * @parameter default-value="Key &quot;%1$s&quot; for property with value &quot;%2$s&quot;."
    */
   private String enumJavadoc;
 
@@ -431,7 +431,8 @@ public class EnumGeneratorMojo extends AbstractMojo {
     StringBuilder builder = new StringBuilder("Auto generated enum type for property file ");
     builder.append("\"");
     // As it's javadoc, we want to have / in the path
-    builder.append(propertiesFile.getAbsolutePath().replace(baseDir, "").replace(File.separatorChar, '/'));
+    String projectBaseDir = project.getBasedir().getAbsolutePath();
+    builder.append(propertiesFile.getAbsolutePath().replace(projectBaseDir, "").replace(File.separatorChar, '/'));
     builder.append("\".");
     String description = builder.toString();
 

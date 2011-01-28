@@ -2,7 +2,7 @@ package com.google.code.maven.propertiesenumplugin;
 
 /**
  * Auto generated enum type for property file
- * "/com/google/code/maven/propertiesenumplugin/myProperties.properties".
+ * "/src/test/resources/com/google/code/maven/propertiesenumplugin/myProperties.properties".
  */
 public enum MyProperties implements com.example.MyInterface {
 
