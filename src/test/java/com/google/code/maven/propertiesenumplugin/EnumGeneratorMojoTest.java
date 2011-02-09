@@ -38,11 +38,6 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
   private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
   /**
-   * The {@link EnumGeneratorMojo} to test.
-   */
-  private EnumGeneratorMojo enumGeneratorMojo;
-
-  /**
    * The target java file.
    */
   private File targetFile;
@@ -87,7 +82,6 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    */
   @Override
   public void setUp() throws Exception {
-    enumGeneratorMojo = new EnumGeneratorMojo();
     targetFile = new File(TMP_DIR + File.separator + ENUM_TYPE_NAME + ".java");
     targetFile.deleteOnExit();
 
@@ -111,32 +105,37 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * Test method for
    * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildEnumFieldName(java.lang.String)}.
    * 
-   * @throws InvalidPropertyKeyException
-   *           if a property key was invalid
+   * @throws Exception
+   *           if the mojo could not be loaded
    */
-  public void testBuildEnumFieldName() throws InvalidPropertyKeyException {
-    assertEquals("KEY", EnumGeneratorMojo.buildEnumFieldName("key"));
-    assertEquals("MY_KEY", EnumGeneratorMojo.buildEnumFieldName("myKey"));
-    assertEquals("MY_LONG_KEY", EnumGeneratorMojo.buildEnumFieldName("myLongKey"));
-    assertEquals("COM_EXAMPLE_KEY", EnumGeneratorMojo.buildEnumFieldName("com.example.key"));
-    assertEquals("COM_EXAMPLE_MY_LONG_KEY", EnumGeneratorMojo.buildEnumFieldName("com.example.myLongKey"));
-    assertEquals("KEY_WITH_SPACES", EnumGeneratorMojo.buildEnumFieldName("key with spaces"));
-    assertEquals("KEY_WITH_UNDERSCORES", EnumGeneratorMojo.buildEnumFieldName("key_with_underscores"));
-    assertEquals("KEY_WITH_DASHES", EnumGeneratorMojo.buildEnumFieldName("key-with-dashes"));
+  public void testBuildEnumFieldName() throws Exception {
+    File pluginXml = new File(getBasedir(), "src/test/resources/plugin-config.xml");
+    EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
+    assertNotNull(mojo);
+
+    assertEquals("KEY", mojo.buildEnumFieldName("key"));
+    assertEquals("MY_KEY", mojo.buildEnumFieldName("myKey"));
+    assertEquals("MY_LONG_KEY", mojo.buildEnumFieldName("myLongKey"));
+    assertEquals("COM_EXAMPLE_KEY", mojo.buildEnumFieldName("com.example.key"));
+    assertEquals("COM_EXAMPLE_MY_LONG_KEY", mojo.buildEnumFieldName("com.example.myLongKey"));
+    assertEquals("KEY_WITH_SPACES", mojo.buildEnumFieldName("key with spaces"));
+    assertEquals("KEY_WITH_UNDERSCORES", mojo.buildEnumFieldName("key_with_underscores"));
+    assertEquals("KEY_WITH_DASHES", mojo.buildEnumFieldName("key-with-dashes"));
+    assertEquals("UNDERSCORE_", mojo.buildEnumFieldName("underscore_"));
     try {
-      EnumGeneratorMojo.buildEnumFieldName("dollar$key");
+      mojo.buildEnumFieldName("dollar$key");
       fail("invalid key was valid");
     } catch (InvalidPropertyKeyException e) {
       // good
     }
     try {
-      EnumGeneratorMojo.buildEnumFieldName("dollar$key");
+      mojo.buildEnumFieldName("dollar$key");
       fail("invalid key was valid");
     } catch (InvalidPropertyKeyException e) {
       // good
     }
     try {
-      EnumGeneratorMojo.buildEnumFieldName("plus+key");
+      mojo.buildEnumFieldName("plus+key");
       fail("invalid key was valid");
     } catch (InvalidPropertyKeyException e) {
       // good
