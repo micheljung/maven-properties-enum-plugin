@@ -20,6 +20,11 @@ package com.google.code.maven.propertiesenumplugin;
 public class DuplicateEnumFieldException extends RuntimeException {
 
   /**
+   * 
+   */
+  private static final long serialVersionUID = 8038494599790703227L;
+
+  /**
    * @param message
    *          the message
    */

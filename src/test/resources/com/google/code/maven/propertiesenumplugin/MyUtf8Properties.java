@@ -2,9 +2,14 @@ package com.google.code.maven.propertiesenumplugin;
 
 /**
  * Auto generated enum type for property file
- * "/src/test/resources/com/google/code/maven/propertiesenumplugin/myProperties.properties".
+ * "/src/test/resources/com/google/code/maven/propertiesenumplugin/myUtf8Properties.properties".
  */
-public enum MyProperties implements com.example.MyInterface {
+public enum MyUtf8Properties implements com.example.MyInterface {
+
+  /**
+   * Key "specialChars" for property with value "äöüàéèç¬¨°§&%?=@¦|".
+   */
+  SPECIAL_CHARS("specialChars"),
 
   /**
    * Key "aQuietLongKey" for property with value "This is a quiet long key".
@@ -32,11 +37,11 @@ public enum MyProperties implements com.example.MyInterface {
   private final String originalKey;
 
   /**
-   * Constructs a new {@link MyProperties}.
+   * Constructs a new {@link MyUtf8Properties}.
    * @param originalKey
    *          the property's key as it's denoted in the properties file
    */
-  MyProperties(String originalKey) {
+  MyUtf8Properties(String originalKey) {
     this.originalKey = originalKey;
   }
 

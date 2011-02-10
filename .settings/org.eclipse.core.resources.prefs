@@ -1,3 +1,8 @@
-#Fri Dec 03 11:25:01 CET 2010
+#Thu Feb 10 10:20:04 CET 2011
 eclipse.preferences.version=1
+encoding//src/test/resources/com/google/code/maven/propertiesenumplugin/MyIso88591Properties.java=ISO-8859-1
+encoding//src/test/resources/com/google/code/maven/propertiesenumplugin/MyUtf8Properties.java=UTF-8
+encoding//src/test/resources/com/google/code/maven/propertiesenumplugin/myIso88591Properties.properties=ISO-8859-1
+encoding//src/test/resources/com/google/code/maven/propertiesenumplugin/myUtf8Properties.properties=ISO-8859-1
+encoding//target/generated-sources/com/google/code/maven/propertiesenumplugin/MyIso88591Properties.java=ISO-8859-1
 encoding/<project>=UTF-8
