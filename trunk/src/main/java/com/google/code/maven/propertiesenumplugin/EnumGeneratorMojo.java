@@ -15,10 +15,15 @@ package com.google.code.maven.propertiesenumplugin;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -229,6 +234,13 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private String enumJavadoc;
 
   /**
+   * Character encoding of the generated java file.
+   * 
+   * @parameter default-value="UTF-8"
+   */
+  private String targetEncoding;
+
+  /**
    * Reference to the maven project.
    * 
    * @parameter expression="${project}"
@@ -258,7 +270,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @return the enum field name
    * @throws InvalidPropertyKeyException
    *           if the property key is invalid, so that the generated enum field name does not match the pattern
-   *           {@value #enumFieldPattern}
+   *           {@link #enumFieldPattern}
    */
   String buildEnumFieldName(final String propertyKey) throws InvalidPropertyKeyException {
     String fieldName = propertyKey.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
@@ -309,19 +321,27 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *           if an I/O error occurred
    * @throws InvalidPropertyKeyException
    *           if a property key is invalid, so that the generated enum field name does not match the pattern
-   *           {@value #enumFieldPattern}
+   *           {@link #enumFieldPattern}
    */
   void generateEnumFile(final File propertiesFile) throws IOException, InvalidPropertyKeyException {
     if (packageName == null) {
       packageName = buildPackageName(propertiesFile, baseDir);
     }
+    if (!Charset.isSupported(targetEncoding)) {
+      throw new UnsupportedEncodingException("The target charset " + targetEncoding + " is not supported");
+    }
+
     File targetFile = buildTargetFile(propertiesFile, packageName, generateDirectory);
 
     // Create package directory
     createDirectories(targetFile.getParentFile());
 
-    BufferedReader reader = new BufferedReader(new FileReader(propertiesFile));
-    Writer writer = new BufferedWriter(new FileWriter(targetFile));
+    /*
+     * I don't yet understand why targetEncoding is also needed for input stream (and not ISO-8859-1), but that was the
+     * only way that worked.
+     */
+    Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(propertiesFile), targetEncoding));
+    Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), targetEncoding));
 
     try {
       Properties properties = new Properties();
@@ -393,7 +413,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *           if an I/O error occurred
    * @throws InvalidPropertyKeyException
    *           if the property key is invalid, so that the generated enum field name does not match the pattern
-   *           {@value #enumFieldPattern}
+   *           {@link #enumFieldPattern}
    */
   void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast)
           throws IOException, InvalidPropertyKeyException {

@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Test cases for {@link EnumGeneratorMojo}.
+ * 
  * @author Michel Jung &lt;michel_jung@hotmail.com&gt;
  */
 public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
@@ -35,6 +37,9 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    */
   private static final Logger logger = LoggerFactory.getLogger(EnumGeneratorMojoTest.class);
 
+  /**
+   * System's temporary directory.
+   */
   private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
   /**
@@ -61,11 +66,6 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * The target package name.
    */
   private final String packageName = "net.sf.maven.propertyenum";
-
-  /**
-   * The property file's package path.
-   */
-  private final String packagePath = packageName.replace('.', '/');
 
   /**
    * The name of the enum type that will be created.
@@ -109,7 +109,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    *           if the mojo could not be loaded
    */
   public void testBuildEnumFieldName() throws Exception {
-    File pluginXml = new File(getBasedir(), "src/test/resources/plugin-config.xml");
+    File pluginXml = new File(getBasedir(), "src/test/resources/utf8-test-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
     assertNotNull(mojo);
 
@@ -194,6 +194,12 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
     assertTrue(dir.exists());
   }
 
+  /**
+   * Tests whether duplicated keys are detected.
+   * 
+   * @throws Exception
+   *           if the mojo could not be executed
+   */
   public void testDuplicateFieldDetection() throws Exception {
     File pluginXml = new File(getBasedir(), "src/test/resources/duplicate-enum-plugin-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
@@ -208,20 +214,45 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
   }
 
   /**
-   * Test method for {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#execute()}.
+   * Tests whether ISO-8859-1 encoding works fine.
    * 
    * @throws Exception
    *           if an exception occurred
    */
-  public void testExecute() throws Exception {
-    File pluginXml = new File(getBasedir(), "src/test/resources/plugin-config.xml");
+  public void testIso88591() throws Exception {
+    File pluginXml = new File(getBasedir(), "src/test/resources/iso88591-test-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
     assertNotNull(mojo);
 
     mojo.execute();
 
-    File expectedFile = new File("src/test/resources/com/google/code/maven/propertiesenumplugin/ExpectedResult.java");
-    File actualFile = new File("target/generated-sources/com/google/code/maven/propertiesenumplugin/MyProperties.java");
+    File expectedFile = new File(
+            "src/test/resources/com/google/code/maven/propertiesenumplugin/MyIso88591Properties.java");
+    File actualFile = new File(
+            "target/generated-sources/com/google/code/maven/propertiesenumplugin/MyIso88591Properties.java");
+    assertTrue("File with expected result could not be found: " + expectedFile, expectedFile.exists());
+    assertTrue("Expected, generated file could not be found: " + actualFile, actualFile.exists());
+
+    assertTrue("Content of file " + actualFile + " does not match content of file " + expectedFile,
+            FileUtils.contentEquals(expectedFile, actualFile));
+  }
+
+  /**
+   * Tests whether UTF-8 encoding works fine.
+   * 
+   * @throws Exception
+   *           if an exception occurred
+   */
+  public void testUtf8() throws Exception {
+    File pluginXml = new File(getBasedir(), "src/test/resources/utf8-test-config.xml");
+    EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
+    assertNotNull(mojo);
+
+    mojo.execute();
+
+    File expectedFile = new File("src/test/resources/com/google/code/maven/propertiesenumplugin/MyUtf8Properties.java");
+    File actualFile = new File(
+            "target/generated-sources/com/google/code/maven/propertiesenumplugin/MyUtf8Properties.java");
     assertTrue("File with expected result could not be found: " + expectedFile, expectedFile.exists());
     assertTrue("Expected, generated file could not be found: " + actualFile, actualFile.exists());
 
@@ -239,7 +270,8 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
     strings.put("String\nwith\nnew\nlines", Arrays.asList(new String[] {"String", "with", "new", "lines"}));
     strings.put(
             "ThisIsAStringWithoutSpacesAndBreaksThisIsAStringWithoutSpacesAndBreaksThisIsAStringWithoutSpacesAndBreaks",
-            Arrays.asList(new String[] {"ThisIsAStringWithoutSpacesAndBreaksThisIsAStringWithoutSpacesAndBreaksThisIsAStringWithoutSpacesAndBreaks"}));
+            Arrays.asList(new String[] {"ThisIsAStringWithoutSpacesAndBreaksThisIsAStringWithoutSpacesAndBreaksThis"
+                    + "IsAStringWithoutSpacesAndBreaks"}));
     strings.put(
             "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod "
                     + "tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At "

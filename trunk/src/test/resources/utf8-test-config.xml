@@ -6,15 +6,15 @@
 				<artifactId>maven-properties-enum-plugin</artifactId>
 				<configuration>
 					<baseDir>src/test/resources</baseDir>
-					<generateDirectory>target/generated-sources</generateDirectory>
+          <generateDirectory>target/generated-sources</generateDirectory>
 					<lineLength>80</lineLength>
 					<implement>com.example.MyInterface</implement>
 					<files>
-						<file>com/google/code/maven/propertiesenumplugin/duplicateProperties.properties</file>
+						<file>com/google/code/maven/propertiesenumplugin/myUtf8Properties.properties</file>
 					</files>
 					<enumJavadoc>Key "%1$s" for property with value "%2$s".</enumJavadoc>
-          <enumFieldPattern>^[A-Z][A-Z0-9]*[A-Z0-9_]*$</enumFieldPattern>
-          <targetEncoding>UTF-8</targetEncoding>
+					<enumFieldPattern>^[A-Z][A-Z0-9]*[A-Z0-9_]*$</enumFieldPattern>
+					<targetEncoding>UTF-8</targetEncoding>
 					
           <project implementation="com.google.code.maven.propertiesenumplugin.stub.EnumGeneratorProjectStub"/>
 				</configuration>
