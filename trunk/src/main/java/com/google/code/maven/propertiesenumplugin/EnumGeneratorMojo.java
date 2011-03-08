@@ -24,13 +24,13 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -250,15 +250,16 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private MavenProject project;
 
   /**
-   * A set of enum field names that have already been declared.
+   * A map of enum field names that have already been declared. Key is the value the enum field name, value the property
+   * key.
    */
-  private final Set<String> alreadyDeclaredEnumNames;
+  private final Map<String, String> generatedEnumFieldNames;
 
   /**
    * Constructs a new {@link EnumGeneratorMojo}.
    */
   public EnumGeneratorMojo() {
-    alreadyDeclaredEnumNames = new HashSet<String>();
+    generatedEnumFieldNames = new HashMap<String, String>();
   }
 
   /**
@@ -417,19 +418,20 @@ public class EnumGeneratorMojo extends AbstractMojo {
    */
   void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast)
           throws IOException, InvalidPropertyKeyException {
-    String enumName = buildEnumFieldName(key);
+    String enumFieldName = buildEnumFieldName(key);
 
-    if (alreadyDeclaredEnumNames.contains(enumName)) {
-      throw new DuplicateEnumFieldException("The enum field " + enumName + " occurs a second time");
+    if (generatedEnumFieldNames.containsKey(enumFieldName)) {
+      throw new DuplicateEnumFieldException("Duplicate enum field name. Both, '" + key + "' and '"
+              + generatedEnumFieldNames.get(enumFieldName) + "' result in '" + enumFieldName + "'");
     }
-    alreadyDeclaredEnumNames.add(enumName);
+    generatedEnumFieldNames.put(enumFieldName, key);
 
     String description = String.format(enumJavadoc, key, value);
     String javadoc = buildJavadoc(description, "  ", lineLength);
 
     writer.append(javadoc);
     writer.append("  ");
-    writer.append(enumName);
+    writer.append(enumFieldName);
     writer.append("(\"");
     writer.append(key);
     writer.append("\")");
