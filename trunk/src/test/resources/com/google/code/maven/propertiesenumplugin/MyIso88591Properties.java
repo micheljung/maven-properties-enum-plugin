@@ -46,10 +46,17 @@ public enum MyIso88591Properties implements com.example.MyInterface {
   }
 
   /**
+   * @return the source properties file's base name
+   */
+  public final String getBaseName() {
+    return "com.google.code.maven.propertiesenumplugin.myIso88591Properties";
+  }
+
+  /**
    * @return the original property key.
    */
   @Override
-  public String toString() {
+  public final String toString() {
     return originalKey;
   }
 }

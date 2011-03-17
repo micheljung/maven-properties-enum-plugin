@@ -101,6 +101,14 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
     }
   }
 
+  public void testBuildBaseName() {
+    File propertiesFile = new File("/foo/bar/com/example/properties.properties");
+    File baseDir = new File("/foo/bar");
+
+    String result = EnumGeneratorMojo.buildBaseName(baseDir, propertiesFile);
+    assertEquals("com.example.properties", result);
+  }
+
   /**
    * Test method for
    * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildEnumFieldName(java.lang.String)}.
@@ -170,7 +178,11 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * .
    */
   public void testBuildPackageName() {
-    EnumGeneratorMojo.buildPackageName(propertiesFile, baseDir);
+    File propertiesFile = new File("/foo/bar/com/example/properties.properties");
+    File baseDir = new File("/foo/bar");
+
+    String result = EnumGeneratorMojo.buildPackageName(propertiesFile, baseDir);
+    assertEquals("com.example", result);
   }
 
   /**
