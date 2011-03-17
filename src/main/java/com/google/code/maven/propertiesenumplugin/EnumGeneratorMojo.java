@@ -49,13 +49,35 @@ import org.apache.maven.project.MavenProject;
 public class EnumGeneratorMojo extends AbstractMojo {
 
   /**
-   * Code for the toString() method
+   * Code for the toString() method.
    */
-  private static final CharSequence TO_STRING_METHOD = "  @Override\n  public String toString() {\n"
+  private static final CharSequence TO_STRING_METHOD = "  @Override\n  public final String toString() {\n"
           + "    return originalKey;\n  }\n";
 
   /**
-   * Builds the enum type name depending on the target file (e.g. "Enum.java" becomes "Enum")
+   * Code for getBaseName() method. Expects the base name as argument.
+   */
+  private static final String GET_BASE_NAME_METHOD = "  public final String getBaseName() {\n"
+          + "    return \"%s\";\n  }\n\n";
+
+  /**
+   * Builds the base name for the given file.
+   * 
+   * @param baseDir
+   *          the base directory
+   * @param propertiesFile
+   *          the properties file
+   * @return e.g. "com.example.Property" if <code>baseDir</code> is "src/main/resources" and <code>propertiesFile</code>
+   *         is "src/main/resources/com/example/Property.properties"
+   */
+  static String buildBaseName(final File baseDir, final File propertiesFile) {
+    String fileName = propertiesFile.getName();
+    String packageName = buildPackageName(propertiesFile, baseDir);
+    return packageName + "." + fileName.substring(0, fileName.indexOf('.'));
+  }
+
+  /**
+   * Builds the enum type name depending on the target file (e.g. "Enum.java" becomes "Enum").
    * 
    * @param targetFile
    *          the enum target file
@@ -105,10 +127,11 @@ public class EnumGeneratorMojo extends AbstractMojo {
    * @return e.g. "com.example" if baseDir is "src/main/resources" and propertiesFile
    *         "src/main/resources/com/example/File.properties"
    */
-  static String buildPackageName(final File propertiesFile, final String baseDir) {
+  static String buildPackageName(final File propertiesFile, final File baseDir) {
     // substring(1) because there would be a leading dot
-    return propertiesFile.getAbsoluteFile().getParent().replace(baseDir, "").replace(File.separatorChar, '.')
-            .substring(1);
+    String parentDirPath = propertiesFile.getAbsoluteFile().getParent();
+    String relativePath = parentDirPath.replace(baseDir.getAbsolutePath(), "");
+    return relativePath.replace(File.separatorChar, '.').substring(1);
   }
 
   /**
@@ -326,7 +349,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    */
   void generateEnumFile(final File propertiesFile) throws IOException, InvalidPropertyKeyException {
     if (packageName == null) {
-      packageName = buildPackageName(propertiesFile, baseDir);
+      packageName = buildPackageName(propertiesFile, new File(baseDir));
     }
     if (!Charset.isSupported(targetEncoding)) {
       throw new UnsupportedEncodingException("The target charset " + targetEncoding + " is not supported");
@@ -359,6 +382,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
       }
       writeOriginalKeyField(writer);
       writeConstructor(writer, buildEnumTypeName(targetFile));
+      writeGetBaseNameMethod(writer, propertiesFile);
       writeToStringMethod(writer);
       writer.write("}\n");
     } finally {
@@ -480,6 +504,23 @@ public class EnumGeneratorMojo extends AbstractMojo {
       writer.append(implement);
     }
     writer.append(" {\n\n");
+  }
+
+  /**
+   * Writes the method to get the base name (the properties file).
+   * 
+   * @param writer
+   *          the Writer to use
+   * @param propertiesFile
+   *          the current properties file, needed to create the base name from
+   * @throws IOException
+   *           if an I/O error occurred
+   */
+  void writeGetBaseNameMethod(final Writer writer, final File propertiesFile) throws IOException {
+    String baseName = buildBaseName(new File(baseDir), propertiesFile);
+    String javadoc = buildJavadoc("@return the source properties file's base name", "  ", lineLength);
+    writer.append(javadoc);
+    writer.append(String.format(GET_BASE_NAME_METHOD, baseName));
   }
 
   /**
