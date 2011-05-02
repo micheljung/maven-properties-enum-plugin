@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -131,7 +132,11 @@ public class EnumGeneratorMojo extends AbstractMojo {
     // substring(1) because there would be a leading dot
     String parentDirPath = propertiesFile.getAbsoluteFile().getParent();
     String relativePath = parentDirPath.replace(baseDir.getAbsolutePath(), "");
-    return relativePath.replace(File.separatorChar, '.').substring(1);
+    if (relativePath.length() > 1) {
+      return relativePath.replace(File.separatorChar, '.').substring(1);
+    }
+
+    return "";
   }
 
   /**
@@ -337,6 +342,9 @@ public class EnumGeneratorMojo extends AbstractMojo {
     try {
       for (String fileName : files) {
         File sourceFile = new File(baseDir, fileName);
+        if (!sourceFile.exists()) {
+          throw new FileNotFoundException("The file " + sourceFile.getAbsolutePath() + " could not be found");
+        }
         generateEnumFile(sourceFile);
       }
     } catch (IOException e) {
@@ -567,9 +575,11 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *           if an I/O error occurred
    */
   void writePackageDeclaration(final Writer writer, final String packageName) throws IOException {
-    writer.append("package ");
-    writer.append(packageName);
-    writer.append(";\n\n");
+    if (packageName != null && !packageName.isEmpty()) {
+      writer.append("package ");
+      writer.append(packageName);
+      writer.append(";\n\n");
+    }
   }
 
   /**
