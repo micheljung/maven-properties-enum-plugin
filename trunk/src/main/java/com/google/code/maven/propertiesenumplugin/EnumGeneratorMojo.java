@@ -328,6 +328,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
    */
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    prepare();
     getLog().debug("baseDir: " + baseDir);
     getLog().debug("generateDirectory: " + generateDirectory);
     // Normalize directories
@@ -409,6 +410,15 @@ public class EnumGeneratorMojo extends AbstractMojo {
       } catch (IOException e) {
         getLog().error("Could not close writer");
       }
+    }
+  }
+
+  /**
+   * Prepares parameters.
+   */
+  private void prepare() {
+    if (prefix == null) {
+      prefix = "";
     }
   }
 
