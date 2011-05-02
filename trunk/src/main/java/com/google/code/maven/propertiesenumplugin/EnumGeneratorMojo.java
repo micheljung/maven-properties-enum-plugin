@@ -279,6 +279,13 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private final Map<String, String> generatedEnumFieldNames;
 
   /**
+   * The prefix of each key. This is the value that will be skipped when generating the enum field name.
+   * 
+   * @parameter default-value=""
+   */
+  private String prefix;
+
+  /**
    * Constructs a new {@link EnumGeneratorMojo}.
    */
   public EnumGeneratorMojo() {
@@ -287,7 +294,8 @@ public class EnumGeneratorMojo extends AbstractMojo {
 
   /**
    * Builds an enumeration field's name, based on the property key. Converts camelCase to CAMEL_CASE and package.names
-   * to PACKAGE_NAMES
+   * to PACKAGE_NAMES. Note that if the key starts with {@link #prefix}, this prefix will be skipped when building the
+   * enum field name.
    * 
    * @param propertyKey
    *          the property's key
@@ -297,10 +305,15 @@ public class EnumGeneratorMojo extends AbstractMojo {
    *           {@link #enumFieldPattern}
    */
   String buildEnumFieldName(final String propertyKey) throws InvalidPropertyKeyException {
-    String fieldName = propertyKey.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
+    String fieldName = propertyKey;
+    if (propertyKey.startsWith(prefix)) {
+      fieldName = propertyKey.substring(prefix.length());
+    }
+    fieldName = fieldName.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
     fieldName = fieldName.replaceAll("([A-Z])[\\.\\s-]([A-Z])", "$1_$2");
     if (!fieldName.matches(enumFieldPattern)) {
-      throw new InvalidPropertyKeyException("The key \"" + propertyKey + "\" is invalid");
+      throw new InvalidPropertyKeyException("The key \"" + propertyKey
+              + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern);
     }
     return fieldName;
   }

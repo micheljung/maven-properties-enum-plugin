@@ -12,6 +12,11 @@ public enum MyIso88591Properties implements com.example.MyInterface {
   SPECIAL_CHARS("specialChars"),
 
   /**
+   * Key "com.example.prefix.key" for property with value "Key with prefix".
+   */
+  KEY("com.example.prefix.key"),
+
+  /**
    * Key "aQuietLongKey" for property with value "This is a quiet long key".
    */
   A_QUIET_LONG_KEY("aQuietLongKey"),
