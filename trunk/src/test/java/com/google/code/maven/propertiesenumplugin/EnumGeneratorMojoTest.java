@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +102,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
     }
   }
 
+  @Test
   public void testBuildBaseName() {
     File propertiesFile = new File("/foo/bar/com/example/properties.properties");
     File baseDir = new File("/foo/bar");
@@ -116,6 +118,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * @throws Exception
    *           if the mojo could not be loaded
    */
+  @Test
   public void testBuildEnumFieldName() throws Exception {
     File pluginXml = new File(getBasedir(), "src/test/resources/utf8-test-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
@@ -154,7 +157,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * Test method for
    * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildEnumTypeName(java.io.File)}.
    */
-
+  @Test
   public void testBuildEnumTypeName() {
     assertEquals(ENUM_TYPE_NAME, EnumGeneratorMojo.buildEnumTypeName(targetFile));
   }
@@ -163,6 +166,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * Test method for
    * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildJavadoc(String, String, int)}.
    */
+  @Test
   public void testBuildJavadoc() {
     String expected = "/**\n * This is a javadoc.\n */\n";
     String actual = EnumGeneratorMojo.buildJavadoc("This is a javadoc.", "", 80);
@@ -177,6 +181,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * Test method for {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildPackageName(File, String)}
    * .
    */
+  @Test
   public void testBuildPackageName() {
     File propertiesFile = new File("/foo/bar/com/example/properties.properties");
     File baseDir = new File("/foo/bar");
@@ -189,6 +194,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * Test method for
    * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#buildTargetFile(File, String, String)}.
    */
+  @Test
   public void testBuildTargetFile() {
     EnumGeneratorMojo.buildTargetFile(propertiesFile, packageName, targetDirectoryPath);
   }
@@ -200,6 +206,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * @throws IOException
    *           if a directory could not be created
    */
+  @Test
   public void testCreateDirectories() throws IOException {
     File dir = new File(targetDirectoryPath);
     EnumGeneratorMojo.createDirectories(dir);
@@ -212,6 +219,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * @throws Exception
    *           if the mojo could not be executed
    */
+  @Test
   public void testDuplicateFieldDetection() throws Exception {
     File pluginXml = new File(getBasedir(), "src/test/resources/duplicate-enum-plugin-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
@@ -231,6 +239,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * @throws Exception
    *           if an exception occurred
    */
+  @Test
   public void testIso88591() throws Exception {
     File pluginXml = new File(getBasedir(), "src/test/resources/iso88591-test-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
@@ -250,11 +259,35 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
   }
 
   /**
+   * Tests whether prefixedOnly works fine.
+   * 
+   * @throws Exception
+   *           if an exception occurred
+   */
+  @Test
+  public void testPrefixedOnly() throws Exception {
+    File pluginXml = new File(getBasedir(), "src/test/resources/prefixed-only-test-config.xml");
+    EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
+    assertNotNull(mojo);
+
+    mojo.execute();
+
+    File expectedFile = new File("src/test/resources/com/google/code/maven/propertiesenumplugin/PrefixedOnly.java");
+    File actualFile = new File("target/generated-sources/com/google/code/maven/propertiesenumplugin/PrefixedOnly.java");
+    assertTrue("File with expected result could not be found: " + expectedFile, expectedFile.exists());
+    assertTrue("Expected, generated file could not be found: " + actualFile, actualFile.exists());
+
+    assertTrue("Content of file " + actualFile + " does not match content of file " + expectedFile,
+            FileUtils.contentEquals(expectedFile, actualFile));
+  }
+
+  /**
    * Tests whether UTF-8 encoding works fine.
    * 
    * @throws Exception
    *           if an exception occurred
    */
+  @Test
   public void testUtf8() throws Exception {
     File pluginXml = new File(getBasedir(), "src/test/resources/utf8-test-config.xml");
     EnumGeneratorMojo mojo = (EnumGeneratorMojo) lookupMojo("generate", pluginXml);
@@ -276,6 +309,7 @@ public class EnumGeneratorMojoTest extends AbstractMojoTestCase {
    * Test method for
    * {@link com.google.code.maven.propertiesenumplugin.EnumGeneratorMojo#wordWrap(java.lang.String, int)}.
    */
+  @Test
   public void testWordWrap() {
     Map<String, List<String>> strings = new HashMap<String, List<String>>();
     strings.put("String to wrap", Arrays.asList(new String[] {"String to wrap"}));
