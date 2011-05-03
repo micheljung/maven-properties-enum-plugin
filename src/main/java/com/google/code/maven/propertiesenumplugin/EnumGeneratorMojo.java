@@ -155,8 +155,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
     char[] charArray = propertyFileName.substring(0, propertyFileName.lastIndexOf('.')).toCharArray();
     charArray[0] = Character.toUpperCase(charArray[0]);
     String packageDirectory = packageName.replace('.', File.separatorChar);
-    return new File(targetDirectory + File.separator + packageDirectory + File.separator + new String(charArray)
-            + ".java");
+    return new File(targetDirectory + File.separator + packageDirectory, new String(charArray) + ".java");
   }
 
   /**
@@ -291,6 +290,13 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private String prefix;
 
   /**
+   * If <code>true</code>, only keys starting with <code>prefix</code> will be processed.
+   * 
+   * @parameter default-value=true
+   */
+  private boolean prefixedOnly;
+
+  /**
    * Constructs a new {@link EnumGeneratorMojo}.
    */
   public EnumGeneratorMojo() {
@@ -359,6 +365,25 @@ public class EnumGeneratorMojo extends AbstractMojo {
   }
 
   /**
+   * Removes all properties that won't be written to the enum, as {@link #prefixedOnly} is set and the key does not
+   * start with {@link #prefix}.
+   * 
+   * @param properties
+   *          the properties to filter
+   */
+  private void filterProperties(final Properties properties) {
+    Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Entry<Object, Object> entry = iterator.next();
+      String key = entry.getKey().toString();
+
+      if (prefixedOnly && !key.startsWith(prefix)) {
+        iterator.remove();
+      }
+    }
+  }
+
+  /**
    * Generates an enum file based on a properties file.
    * 
    * @param propertiesFile
@@ -397,10 +422,14 @@ public class EnumGeneratorMojo extends AbstractMojo {
       writeEnumTypeJavadoc(writer, propertiesFile);
       writeEnumTypeSignature(writer, buildEnumTypeName(targetFile));
 
+      filterProperties(properties);
+
       Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator();
       while (iterator.hasNext()) {
         Entry<Object, Object> entry = iterator.next();
-        writeEnumField(entry.getKey().toString(), entry.getValue().toString(), writer, !iterator.hasNext());
+        String key = entry.getKey().toString();
+
+        writeEnumField(key, entry.getValue().toString(), writer, !iterator.hasNext());
       }
       writeOriginalKeyField(writer);
       writeConstructor(writer, buildEnumTypeName(targetFile));
