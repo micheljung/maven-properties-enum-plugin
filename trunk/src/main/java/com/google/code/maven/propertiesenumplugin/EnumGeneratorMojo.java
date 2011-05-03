@@ -283,7 +283,8 @@ public class EnumGeneratorMojo extends AbstractMojo {
   private final Map<String, String> generatedEnumFieldNames;
 
   /**
-   * The prefix of each key. This is the value that will be skipped when generating the enum field name.
+   * The prefix of each key. This is the value that will be skipped when generating the enum field name. See also:
+   * <code>prefixedOnly</code>.
    * 
    * @parameter default-value=""
    */
