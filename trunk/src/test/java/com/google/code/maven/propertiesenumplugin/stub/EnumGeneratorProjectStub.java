@@ -15,7 +15,7 @@ package com.google.code.maven.propertiesenumplugin.stub;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 
 /**
- * Project stub used in <code>EnumGeneratorMojo</code>.
+ * Project stub used in <code>EnumGenerator</code>.
  * 
  * @author <a href="mailto:michel_jung@hotmail.ch">Michel Jung</a>
  */
