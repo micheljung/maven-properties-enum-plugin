@@ -1,0 +1,26 @@
+<project>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.sf.maven.plugins</groupId>
+				<artifactId>maven-properties-enum-plugin</artifactId>
+				<configuration>
+					<baseDir>src/test/resources</baseDir>
+          <generateDirectory>target/generated-sources</generateDirectory>
+					<lineLength>80</lineLength>
+					<implement>com.example.MyInterface</implement>
+					<files>
+						<file>com/google/code/maven/propertiesenumplugin/myIso88591Properties.properties</file>
+					</files>
+					<enumJavadoc>Key "%1$s" for property with value "%2$s".</enumJavadoc>
+					<enumFieldPattern>^[A-Z][A-Z0-9]*[A-Z0-9_]*$</enumFieldPattern>
+					<targetEncoding>ISO-8859-1</targetEncoding>
+          <prefix>com.example.prefix.</prefix>
+          <prefixedOnly>false</prefixedOnly>
+					
+          <project implementation="com.google.code.maven.propertiesenumplugin.stub.EnumGeneratorProjectStub"/>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
