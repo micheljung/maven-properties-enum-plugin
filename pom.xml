@@ -60,7 +60,7 @@
       <artifactId>maven-plugin-testing-harness</artifactId>
       <version>1.1</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
