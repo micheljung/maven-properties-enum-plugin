@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -9,7 +8,7 @@
 	</parent>
 	<groupId>com.googlecode.maven-properties-enum-plugin</groupId>
 	<artifactId>maven-properties-enum-plugin</artifactId>
-	<version>1.2.10-SNAPSHOT</version>
+	<version>1.3.0</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven Properties-Enum-Plugin</name>
 	<licenses>
@@ -114,9 +113,9 @@ Your advantages:
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:http://maven-properties-enum-plugin.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://maven-properties-enum-plugin.googlecode.com/svn/trunk/</developerConnection>
-		<url>https://code.google.com/p/maven-properties-enum-plugin/source/browse/</url>
+		<connection>scm:svn:http://maven-properties-enum-plugin.googlecode.com/svn/tags/maven-properties-enum-plugin-1.3.0</connection>
+		<developerConnection>scm:svn:https://maven-properties-enum-plugin.googlecode.com/svn/tags/maven-properties-enum-plugin-1.3.0</developerConnection>
+		<url>https://code.google.com/p/maven-properties-enum-plugin/source/browse/tags/maven-properties-enum-plugin-1.3.0</url>
 	</scm>
 	<build>
 		<plugins>
