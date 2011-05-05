@@ -389,13 +389,7 @@ public class EnumGenerator {
 
       filterProperties(properties);
 
-      Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator();
-      while (iterator.hasNext()) {
-        Entry<Object, Object> entry = iterator.next();
-        String key = entry.getKey().toString();
-
-        writeEnumField(key, entry.getValue().toString(), writer, !iterator.hasNext());
-      }
+      writeEnumFields(writer, properties);
       writeOriginalKeyField(writer);
       writeConstructor(writer, buildEnumTypeName(targetFile));
       writeGetBaseNameMethod(writer, propertiesFile);
@@ -518,11 +512,34 @@ public class EnumGenerator {
     writer.append(key);
     writer.append("\")");
 
-    if (isLast) {
-      writer.append(";\n\n");
-    } else {
+    if (!isLast) {
       writer.append(",\n\n");
     }
+  }
+
+  /**
+   * Writes the enum fields to the given writer.
+   * 
+   * @param writer
+   *          the {@link Writer} to use
+   * @param properties
+   *          the properties to generate enum fields for
+   * @throws IOException
+   *           if an I/O error occurred
+   * @throws InvalidPropertyKeyException
+   *           if a property key is invalid, so that the generated enum field name does not match the pattern
+   *           {@link #enumFieldPattern}
+   */
+  private void writeEnumFields(final Writer writer, final Properties properties) throws IOException,
+          InvalidPropertyKeyException {
+    Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Entry<Object, Object> entry = iterator.next();
+      String key = entry.getKey().toString();
+
+      writeEnumField(key, entry.getValue().toString(), writer, !iterator.hasNext());
+    }
+    writer.append(";\n\n");
   }
 
   /**
