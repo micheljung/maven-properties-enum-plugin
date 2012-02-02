@@ -385,11 +385,13 @@ public class EnumGenerator {
 
       writePackageDeclaration(writer, packageName);
       writeEnumTypeJavadoc(writer, propertiesFile);
-      writeEnumTypeSignature(writer, buildEnumTypeName(targetFile));
+      
+      String enumTypeName = buildEnumTypeName(targetFile);
+      writeEnumTypeSignature(writer, enumTypeName);
 
       filterProperties(properties);
 
-      writeEnumFields(writer, properties);
+      writeEnumFields(writer, properties, enumTypeName);
       writeOriginalKeyField(writer);
       writeConstructor(writer, buildEnumTypeName(targetFile));
       writeGetBaseNameMethod(writer, propertiesFile);
@@ -486,21 +488,24 @@ public class EnumGenerator {
    *          the Writer to use
    * @param isLast
    *          <code>true</code> if this is the last enum field, <code>false</code> otherwise
+ * @param enumTypeName the name of the target enum type
    * @throws IOException
    *           if an I/O error occurred
    * @throws InvalidPropertyKeyException
    *           if the property key is invalid, so that the generated enum field name does not match the pattern
    *           {@link #enumFieldPattern}
    */
-  void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast)
+  void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast, String enumTypeName)
           throws IOException, InvalidPropertyKeyException {
     String enumFieldName = buildEnumFieldName(key);
+    
+    String fieldIdentifier = String.format("%s.%s", enumTypeName, enumFieldName);
 
-    if (generatedEnumFieldNames.containsKey(enumFieldName)) {
+    if (generatedEnumFieldNames.containsKey(fieldIdentifier)) {
       throw new DuplicateEnumFieldException("Duplicate enum field name. Both, '" + key + "' and '"
-              + generatedEnumFieldNames.get(enumFieldName) + "' result in '" + enumFieldName + "'");
+              + generatedEnumFieldNames.get(fieldIdentifier) + "' result in '" + enumFieldName + "'");
     }
-    generatedEnumFieldNames.put(enumFieldName, key);
+    generatedEnumFieldNames.put(fieldIdentifier, key);
 
     String description = String.format(enumJavadoc, key, value);
     String javadoc = buildJavadoc(description, "  ", lineLength);
@@ -524,20 +529,21 @@ public class EnumGenerator {
    *          the {@link Writer} to use
    * @param properties
    *          the properties to generate enum fields for
+ * @param enumTypeName the name of the target enum type
    * @throws IOException
    *           if an I/O error occurred
    * @throws InvalidPropertyKeyException
    *           if a property key is invalid, so that the generated enum field name does not match the pattern
    *           {@link #enumFieldPattern}
    */
-  private void writeEnumFields(final Writer writer, final Properties properties) throws IOException,
+  private void writeEnumFields(final Writer writer, final Properties properties, String enumTypeName) throws IOException,
           InvalidPropertyKeyException {
     Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator();
     while (iterator.hasNext()) {
       Entry<Object, Object> entry = iterator.next();
       String key = entry.getKey().toString();
 
-      writeEnumField(key, entry.getValue().toString(), writer, !iterator.hasNext());
+      writeEnumField(key, entry.getValue().toString(), writer, !iterator.hasNext(), enumTypeName);
     }
     writer.append(";\n\n");
   }
