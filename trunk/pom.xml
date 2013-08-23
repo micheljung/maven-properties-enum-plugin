@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>com.googlecode.maven-properties-enum-plugin</groupId>
 	<artifactId>maven-properties-enum-plugin</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven Properties-Enum-Plugin</name>
 	<licenses>
@@ -113,9 +113,9 @@ Your advantages:
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:http://maven-properties-enum-plugin.googlecode.com/svn/tags/maven-properties-enum-plugin-1.4.0</connection>
-		<developerConnection>scm:svn:https://maven-properties-enum-plugin.googlecode.com/svn/tags/maven-properties-enum-plugin-1.4.0</developerConnection>
-		<url>https://code.google.com/p/maven-properties-enum-plugin/source/browse/tags/maven-properties-enum-plugin-1.4.0</url>
+		<connection>scm:svn:http://maven-properties-enum-plugin.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://maven-properties-enum-plugin.googlecode.com/svn/trunk/</developerConnection>
+		<url>https://code.google.com/p/maven-properties-enum-plugin/source/browse/</url>
 	</scm>
 	<build>
 		<plugins>
