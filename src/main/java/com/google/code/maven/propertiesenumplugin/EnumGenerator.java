@@ -49,13 +49,13 @@ public class EnumGenerator {
    * Code for getBaseName() method. Expects the base name as argument.
    */
   private static final String GET_BASE_NAME_METHOD = "  public final String getBaseName() {\n"
-          + "    return \"%s\";\n  }\n\n";
+      + "    return \"%s\";\n  }\n\n";
 
   /**
    * Code for the toString() method.
    */
   private static final CharSequence TO_STRING_METHOD = "  @Override\n  public final String toString() {\n"
-          + "    return originalKey;\n  }\n";
+      + "    return originalKey;\n  }\n";
 
   /**
    * Base directory for poperties files.
@@ -151,9 +151,9 @@ public class EnumGenerator {
    * @param targetEncoding
    */
   public EnumGenerator(final String baseDir, final String enumFieldPattern, final String enumJavadoc,
-          final List<String> files, final String generateDirectory, final String implement, final Integer lineLength,
-          final Log logger, final String packageName, final String prefix, final boolean prefixedOnly,
-          final MavenProject project, final String targetEncoding) {
+      final List<String> files, final String generateDirectory, final String implement, final Integer lineLength,
+      final Log logger, final String packageName, final String prefix, final boolean prefixedOnly,
+      final MavenProject project, final String targetEncoding) {
     generatedEnumFieldNames = new HashMap<String, String>();
 
     this.baseDir = baseDir;
@@ -165,12 +165,7 @@ public class EnumGenerator {
     this.lineLength = lineLength;
     this.logger = logger;
     this.packageName = packageName;
-
-    if (prefix != null) {
-      this.prefix = prefix;
-    } else {
-      this.prefix = "";
-    }
+    this.prefix = prefix;
 
     this.prefixedOnly = prefixedOnly;
     this.project = project;
@@ -207,14 +202,18 @@ public class EnumGenerator {
    */
   String buildEnumFieldName(final String propertyKey) throws InvalidPropertyKeyException {
     String fieldName = propertyKey;
-    if (propertyKey.startsWith(prefix)) {
-      fieldName = propertyKey.substring(prefix.length() + 1);
+    if (prefix != null) {
+      String prefixWithPoint = prefix + ".";
+      if (propertyKey.startsWith(prefixWithPoint)) {
+        fieldName = propertyKey.substring(prefixWithPoint.length());
+      }
     }
-    fieldName = fieldName.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
+    fieldName = fieldName.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toUpperCase();
     fieldName = fieldName.replaceAll("([A-Z0-9])[\\.\\s-]([A-Z0-9])", "$1_$2");
     if (!fieldName.matches(enumFieldPattern)) {
       throw new InvalidPropertyKeyException("The key \"" + propertyKey
-        + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern + " but was: " + fieldName);
+          + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern + " but was: "
+          + fieldName);
     }
     return fieldName;
   }
@@ -385,7 +384,7 @@ public class EnumGenerator {
 
       writePackageDeclaration(writer, packageName);
       writeEnumTypeJavadoc(writer, propertiesFile);
-      
+
       String enumTypeName = buildEnumTypeName(targetFile);
       writeEnumTypeSignature(writer, enumTypeName);
 
@@ -488,22 +487,24 @@ public class EnumGenerator {
    *          the Writer to use
    * @param isLast
    *          <code>true</code> if this is the last enum field, <code>false</code> otherwise
- * @param enumTypeName the name of the target enum type
+   * @param enumTypeName
+   *          the name of the target enum type
    * @throws IOException
    *           if an I/O error occurred
    * @throws InvalidPropertyKeyException
    *           if the property key is invalid, so that the generated enum field name does not match the pattern
    *           {@link #enumFieldPattern}
    */
-  void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast, String enumTypeName)
-          throws IOException, InvalidPropertyKeyException {
+  void writeEnumField(final String key, final String value, final Writer writer, final boolean isLast,
+      String enumTypeName)
+      throws IOException, InvalidPropertyKeyException {
     String enumFieldName = buildEnumFieldName(key);
-    
+
     String fieldIdentifier = String.format("%s.%s", enumTypeName, enumFieldName);
 
     if (generatedEnumFieldNames.containsKey(fieldIdentifier)) {
       throw new DuplicateEnumFieldException("Duplicate enum field name. Both, '" + key + "' and '"
-              + generatedEnumFieldNames.get(fieldIdentifier) + "' result in '" + enumFieldName + "'");
+          + generatedEnumFieldNames.get(fieldIdentifier) + "' result in '" + enumFieldName + "'");
     }
     generatedEnumFieldNames.put(fieldIdentifier, key);
 
@@ -529,15 +530,17 @@ public class EnumGenerator {
    *          the {@link Writer} to use
    * @param properties
    *          the properties to generate enum fields for
- * @param enumTypeName the name of the target enum type
+   * @param enumTypeName
+   *          the name of the target enum type
    * @throws IOException
    *           if an I/O error occurred
    * @throws InvalidPropertyKeyException
    *           if a property key is invalid, so that the generated enum field name does not match the pattern
    *           {@link #enumFieldPattern}
    */
-  private void writeEnumFields(final Writer writer, final Properties properties, String enumTypeName) throws IOException,
-          InvalidPropertyKeyException {
+  private void writeEnumFields(final Writer writer, final Properties properties, String enumTypeName)
+      throws IOException,
+      InvalidPropertyKeyException {
     Iterator<Entry<Object, Object>> iterator = properties.entrySet().iterator();
     while (iterator.hasNext()) {
       Entry<Object, Object> entry = iterator.next();
