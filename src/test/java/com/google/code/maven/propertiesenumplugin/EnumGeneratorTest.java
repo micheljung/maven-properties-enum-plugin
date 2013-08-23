@@ -142,6 +142,7 @@ public class EnumGeneratorTest {
     assertEquals("KEY_WITH_UNDERSCORES", enumGenerator.buildEnumFieldName("key_with_underscores"));
     assertEquals("KEY_WITH_DASHES", enumGenerator.buildEnumFieldName("key-with-dashes"));
     assertEquals("UNDERSCORE_", enumGenerator.buildEnumFieldName("underscore_"));
+    assertEquals("NUMBER_1_SOMETHING", enumGenerator.buildEnumFieldName("number_1.something"));
 
     try {
       enumGenerator.buildEnumFieldName("dollar$key");

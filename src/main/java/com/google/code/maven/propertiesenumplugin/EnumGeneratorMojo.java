@@ -68,7 +68,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
 
   /**
    * Fully qualified name of an interface to implement. This allows to make multiple generated enum types an
-   * implementation of the same interface.
+   * implementation of the same interface. If given, the interface has to define {@code key()}.
    * 
    * @parameter
    */
@@ -131,7 +131,7 @@ public class EnumGeneratorMojo extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     EnumGenerator enumGenerator = new EnumGenerator(baseDir, enumFieldPattern, enumJavadoc, files, generateDirectory,
-            implement, lineLength, getLog(), packageName, prefix, prefixedOnly, project, targetEncoding);
+        implement, lineLength, getLog(), packageName, prefix, prefixedOnly, project, targetEncoding);
     try {
       enumGenerator.generate();
     } catch (IOException e) {
