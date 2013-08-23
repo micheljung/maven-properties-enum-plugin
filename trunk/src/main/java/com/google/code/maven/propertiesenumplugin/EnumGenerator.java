@@ -208,7 +208,7 @@ public class EnumGenerator {
   String buildEnumFieldName(final String propertyKey) throws InvalidPropertyKeyException {
     String fieldName = propertyKey;
     if (propertyKey.startsWith(prefix)) {
-      fieldName = propertyKey.substring(prefix.length());
+      fieldName = propertyKey.substring(prefix.length() + 1);
     }
     fieldName = fieldName.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
     fieldName = fieldName.replaceAll("([A-Z])[\\.\\s-]([A-Z])", "$1_$2");
