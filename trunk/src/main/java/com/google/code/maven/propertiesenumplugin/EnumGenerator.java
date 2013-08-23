@@ -48,14 +48,22 @@ public class EnumGenerator {
   /**
    * Code for getBaseName() method. Expects the base name as argument.
    */
-  private static final String GET_BASE_NAME_METHOD = "  public final String getBaseName() {\n"
+  private static final String GET_BASE_NAME_METHOD = "  public static final String getResourceBaseName() {\n"
       + "    return \"%s\";\n  }\n\n";
 
   /**
    * Code for the toString() method.
    */
-  private static final CharSequence TO_STRING_METHOD = "  @Override\n  public final String toString() {\n"
+  private static final String TO_STRING_METHOD = "  @Override\n  public final String toString() {\n"
       + "    return originalKey;\n  }\n";
+
+  /**
+   * Code for the key() method.
+   */
+  private static final String KEY_METHOD = "  %s\n  public final String key() {\n"
+      + "    return originalKey;\n  }\n";
+
+  private static final String AT_OVERRIDE = "@Override";
 
   /**
    * Base directory for poperties files.
@@ -92,7 +100,7 @@ public class EnumGenerator {
 
   /**
    * Fully qualified name of an interface to implement. This allows to make multiple generated enum types an
-   * implementation of the same interface.
+   * implementation of the same interface. If given, the interface has to define {@code key()}.
    */
   private final String implement;
 
@@ -110,13 +118,13 @@ public class EnumGenerator {
    * Name of the target package. If not given, the package name will be same as the property's path, relative to
    * <code>baseDir</code>.
    */
-  private String packageName;
+  private final String packageName;
 
   /**
    * The prefix of each key. This is the value that will be skipped when generating the enum field name. See also:
    * <code>prefixedOnly</code>.
    */
-  private String prefix;
+  private final String prefix;
 
   /**
    * If <code>true</code>, only keys starting with <code>prefix</code> will be processed.
@@ -212,8 +220,7 @@ public class EnumGenerator {
     fieldName = fieldName.replaceAll("([A-Z0-9])[\\.\\s-]([A-Z0-9])", "$1_$2");
     if (!fieldName.matches(enumFieldPattern)) {
       throw new InvalidPropertyKeyException("The key \"" + propertyKey
-          + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern + " but was: "
-          + fieldName);
+          + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern + " but was: " + fieldName);
     }
     return fieldName;
   }
@@ -326,7 +333,8 @@ public class EnumGenerator {
       Entry<Object, Object> entry = iterator.next();
       String key = entry.getKey().toString();
 
-      if (prefixedOnly && !key.startsWith(prefix)) {
+      String prefixWithPoint = prefix + ".";
+      if (prefixedOnly && !key.startsWith(prefixWithPoint)) {
         iterator.remove();
       }
     }
@@ -359,6 +367,7 @@ public class EnumGenerator {
    *           {@link #enumFieldPattern}
    */
   void generateEnumFile(final File propertiesFile) throws IOException, InvalidPropertyKeyException {
+    String packageName = this.packageName;
     if (packageName == null) {
       packageName = buildPackageName(propertiesFile, new File(baseDir));
     }
@@ -395,6 +404,7 @@ public class EnumGenerator {
       writeConstructor(writer, buildEnumTypeName(targetFile));
       writeGetBaseNameMethod(writer, propertiesFile);
       writeToStringMethod(writer);
+      writeKeyMethod(writer, implement != null);
       writer.write("}\n");
     } finally {
       try {
@@ -414,14 +424,9 @@ public class EnumGenerator {
    * 
    */
   private void prepare() {
-
     // Normalize directories
     baseDir = new File(baseDir).getAbsolutePath();
     generateDirectory = new File(generateDirectory).getAbsolutePath();
-
-    if (prefix == null) {
-      prefix = "";
-    }
   }
 
   /**
@@ -642,8 +647,20 @@ public class EnumGenerator {
    *           if an I/O error occurred
    */
   void writeToStringMethod(final Writer writer) throws IOException {
-    String javadoc = buildJavadoc("@return the original property key.", "  ", lineLength);
+    String javadoc = buildJavadoc("@return the property key.", "  ", lineLength);
     writer.append(javadoc);
     writer.append(TO_STRING_METHOD);
+  }
+
+  /**
+   * @param writer
+   *          the Writer to use
+   * @throws IOException
+   *           if an I/O error occurred
+   */
+  void writeKeyMethod(final Writer writer, boolean override) throws IOException {
+    String javadoc = buildJavadoc("@return the property key.", "  ", lineLength);
+    writer.append(javadoc);
+    writer.append(String.format(KEY_METHOD, AT_OVERRIDE));
   }
 }

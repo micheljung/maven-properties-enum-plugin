@@ -33,15 +33,22 @@ public enum PrefixedOnly implements com.example.MyInterface {
   /**
    * @return the source properties file's base name
    */
-  public final String getBaseName() {
+  public static final String getResourceBaseName() {
     return "com.google.code.maven.propertiesenumplugin.prefixedOnly";
   }
 
   /**
-   * @return the original property key.
+   * @return the property key.
    */
   @Override
   public final String toString() {
+    return originalKey;
+  }
+  /**
+   * @return the property key.
+   */
+  @Override
+  public final String key() {
     return originalKey;
   }
 }
