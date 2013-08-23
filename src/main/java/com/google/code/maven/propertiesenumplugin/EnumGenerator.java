@@ -211,7 +211,7 @@ public class EnumGenerator {
       fieldName = propertyKey.substring(prefix.length() + 1);
     }
     fieldName = fieldName.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
-    fieldName = fieldName.replaceAll("([A-Z])[\\.\\s-]([A-Z])", "$1_$2");
+    fieldName = fieldName.replaceAll("([A-Z0-9])[\\.\\s-]([A-Z0-9])", "$1_$2");
     if (!fieldName.matches(enumFieldPattern)) {
       throw new InvalidPropertyKeyException("The key \"" + propertyKey
         + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern + " but was: " + fieldName);
