@@ -15,7 +15,7 @@
 					<enumJavadoc>Key "%1$s" for property with value "%2$s".</enumJavadoc>
 					<enumFieldPattern>^[A-Z][A-Z0-9]*[A-Z0-9_]*$</enumFieldPattern>
 					<targetEncoding>ISO-8859-1</targetEncoding>
-          <prefix>com.example.prefix.</prefix>
+          <prefix>com.example.prefix</prefix>
           <prefixedOnly>false</prefixedOnly>
 					
           <project implementation="com.google.code.maven.propertiesenumplugin.stub.EnumGeneratorProjectStub"/>
