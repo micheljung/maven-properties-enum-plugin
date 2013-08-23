@@ -214,7 +214,7 @@ public class EnumGenerator {
     fieldName = fieldName.replaceAll("([A-Z])[\\.\\s-]([A-Z])", "$1_$2");
     if (!fieldName.matches(enumFieldPattern)) {
       throw new InvalidPropertyKeyException("The key \"" + propertyKey
-              + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern);
+        + "\" is invalid. The resulting enum must match the pattern " + enumFieldPattern + " but was: " + fieldName);
     }
     return fieldName;
   }
