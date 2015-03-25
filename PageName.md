@@ -1,0 +1,1 @@
+Maven site can currently be found at http://hudson.jgameadmin.ch/hudson/job/maven-properties-enum-plugin%20site/site/
